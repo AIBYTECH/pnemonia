@@ -9,7 +9,8 @@ from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
 
 # Set your OpenAI API key
-os.environ["OPENAI_API_KEY"]
+# os.environ["OPENAI_API_KEY"]
+os.environ["OPENAI_API_KEY"] = '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'  # Replace with your OpenAI API key
 # Load the model
 @st.cache_resource
 def load_classifier():

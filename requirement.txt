@@ -1,5 +1,5 @@
-streamlit 
-tensorflow
+streamlit
+tensorflow==2.13
 pillow 
 openai 
 langchain

@@ -1,0 +1,8 @@
+tensorflow==2.12.0
+numpy==1.23.5
+opencv-python==4.7.0.72
+Pillow==9.5.0
+streamlit==1.24.0
+langchain==0.0.348
+langchain-openai==0.0.2.post1
+python-dotenv==1.0.0

@@ -1,16 +1,18 @@
 import os
 import numpy as np
+import tensorflow as tf
 import cv2
 from PIL import Image
-import tensorflow as tf
 import streamlit as st
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from langchain_openai import ChatOpenAI
-from datetime import datetime
 
 # Set your OpenAI API key
+
+
 os.environ["OPENAI_API_KEY"] = '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'  # Replace with your OpenAI API key
+
 
 # Load the model
 @st.cache_resource
@@ -46,26 +48,16 @@ def run_inference(image):
     annotator(img0, class_label)
     return Image.fromarray(img0), class_label
 
-def get_response(user_message, scan_result, patient_history=None):
+def get_response(user_message, scan_result):
     model_name = 'gpt-3.5-turbo'
     llm = ChatOpenAI(model_name=model_name, temperature=0.3)
-    
-    # Create history context if patient history exists
-    history_context = ""
-    if patient_history and len(patient_history) > 0:
-        history_context = "\nPatient Scan History:\n"
-        for record in patient_history:
-            history_context += f"- {record['date']}: {record['result']}\n"
-    
     pneumonia_info = f"""Pneumonia is a common respiratory infection that inflames the air sacs in one or both lungs...
-                         The most recent scan result indicates that the patient is {scan_result}.
-                         {history_context}
+                         The scan result indicates that the patient is {scan_result}.
                          """
     conversation_template = f"""
                 You are a pneumonia medical expert and assistant conversational assistant...
-                Based on the provided information and the scan results, with the most recent scan showing that the patient is {scan_result},
-                answer the following question, taking into account any relevant patient history.
-                
+                Based on the provided information and the scan result, which shows that the patient is {scan_result},
+                answer the following question.
                 Context: {pneumonia_info}
                 User message: {user_message}
             """
@@ -82,11 +74,9 @@ logo = Image.open("logo.jpeg")
 st.image(logo, width=100)
 st.markdown("<h1 style='text-align: right corner;'>AIBYTEC</h1>", unsafe_allow_html=True)
 
-# Initialize session state to store the scan result and patient history
+# Initialize session state to store the scan result
 if "scan_result" not in st.session_state:
     st.session_state.scan_result = None
-if "patient_history" not in st.session_state:
-    st.session_state.patient_history = []
 
 st.header("Upload an X-ray Image")
 uploaded_image = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
@@ -97,25 +87,8 @@ if uploaded_image is not None:
     if st.button("Run Detection"):
         result_image, scan_result = run_inference(image)
         st.session_state.scan_result = scan_result
-        # Add to patient history with timestamp
-        st.session_state.patient_history.append({
-            'date': datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            'result': scan_result,
-            'image': image  # Storing the image reference
-        })
         st.image(result_image, caption='Detection Result', use_column_width=True)
         st.write(f"Scan Result: {scan_result}")
-
-        # Display patient history
-        st.subheader("Patient Scan History")
-        for i, record in enumerate(st.session_state.patient_history):
-            col1, col2 = st.columns([1, 4])
-            with col1:
-                st.image(record['image'], width=100, caption=f"Scan {i+1}")
-            with col2:
-                st.write(f"**Date:** {record['date']}")
-                st.write(f"**Result:** {record['result']}")
-                st.write("---")
 
 st.header("Ask a Pneumonia-Related Question")
 user_question = st.text_area("Enter your question here:")
@@ -123,7 +96,7 @@ user_question = st.text_area("Enter your question here:")
 if st.button("Get Response"):
     if user_question:
         if st.session_state.scan_result is not None:
-            response = get_response(user_question, st.session_state.scan_result, st.session_state.patient_history)
+            response = get_response(user_question, st.session_state.scan_result)
             st.write("Response:", response)
         else:
             st.write("Please upload an X-ray image and run detection first.")

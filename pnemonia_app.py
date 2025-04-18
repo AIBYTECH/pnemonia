@@ -96,7 +96,7 @@ if st.button("📣 Get AI Response"):
 
 # Optional branding
 with st.sidebar:
-    st.image("logo.jpeg", width=100)
+    st.image("logo.jpg", width=100)
     st.markdown("### AIBYTEC")
     st.markdown("""
     This is a prototype for AI-powered pneumonia detection and consultation.

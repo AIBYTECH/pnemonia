@@ -7,7 +7,7 @@ import os
 
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
-from langchain_openai import ChatOpenAI # type: ignore
+from langchain_openai import ChatOpenAI 
 
 
 os.environ["OPENAI_API_KEY"] = st.secrets["OPENAI_API_KEY"]

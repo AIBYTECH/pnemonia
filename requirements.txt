@@ -4,3 +4,4 @@ pillow
 openai 
 langchain
 opencv-python
+langchain-openai

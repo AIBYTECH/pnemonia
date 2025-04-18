@@ -1,7 +1,6 @@
-streamlit 
+streamlit
 tensorflow
-pillow 
-openai 
-langchain
 opencv-python
+Pillow
+langchain
 langchain-openai
